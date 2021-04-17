@@ -2,7 +2,9 @@
 
 ### Member
 17110022 - Ho Vu Minh Duc
+
 17110046 - Phan Hoang Long
+
 17110051 - Nguyen Quang Minh
 
 ### Notes
