@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Loader from './Loader'
 import Message from './Message'
 import { listTopProducts } from '../actions/productActions'
+import { truncateText } from '../utils'
 
 const ProductCarousel = () => {
   const dispatch = useDispatch()
@@ -25,10 +26,10 @@ const ProductCarousel = () => {
       {products.map((product) => (
         <Carousel.Item key={product._id}>
           <Link to={`/product/${product._id}`}>
-            <Image src={product.image} alt={product.name} fluid />
+            <Image src={product.image} alt={product.name} style={{ marginTop: 50 }} roundedCircle />
             <Carousel.Caption className='carousel-caption'>
               <h2>
-                {product.name} (${product.price})
+                {truncateText(product.name)} (${product.price})
               </h2>
             </Carousel.Caption>
           </Link>
