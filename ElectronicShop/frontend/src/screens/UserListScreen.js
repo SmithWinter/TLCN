@@ -2,6 +2,9 @@ import React, { useEffect } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { listUsers, deleteUser } from '../actions/userActions'
@@ -27,14 +30,16 @@ const UserListScreen = ({ history }) => {
   }, [dispatch, history, successDelete, userInfo])
 
   const deleteHandler = (id) => {
-    if (window.confirm('Are you sure')) {
+    if (window.confirm('Are you sure you want to delete this user?')) {
       dispatch(deleteUser(id))
+      toast.info('Delete user successful')
     }
   }
 
   return (
     <>
       <h1>Users</h1>
+      <ToastContainer />
       {loading ? (
         <Loader />
       ) : error ? (
@@ -74,6 +79,7 @@ const UserListScreen = ({ history }) => {
                   <Button
                     variant='danger'
                     className='btn-sm'
+                    disabled={user._id === userInfo._id ? true : false}
                     onClick={() => deleteHandler(user._id)}
                   >
                     <i className='fas fa-trash'></i>

@@ -14,8 +14,12 @@ const getProducts = asyncHandler(async (req, res) => {
           $regex: req.query.keyword,
           $options: 'i',
         },
+        isActive: true
       }
-    : {}
+    : 
+    {
+      isActive: true
+    }
 
   const count = await Product.countDocuments({ ...keyword })
   const products = await Product.find({ ...keyword })
@@ -58,26 +62,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-  const product = new Product({
-    name: 'Sample name',
-    price: 0,
-    user: req.user._id,
-    image: '/images/sample.jpg',
-    brand: 'Sample brand',
-    category: 'Sample category',
-    countInStock: 0,
-    numReviews: 0,
-    description: 'Sample description',
-  })
-
-  const createdProduct = await product.save()
-  res.status(201).json(createdProduct)
-})
-
-// @desc    Update a product
-// @route   PUT /api/products/:id
-// @access  Private/Admin
-const updateProduct = asyncHandler(async (req, res) => {
   const {
     name,
     price,
@@ -88,16 +72,50 @@ const updateProduct = asyncHandler(async (req, res) => {
     countInStock,
   } = req.body
 
+
+  const product = new Product({
+    name,
+    price,
+    description,
+    image,
+    brand,
+    category,
+    countInStock,
+    user: req.user._id,
+    numReviews: 0,
+  })
+
+
+  const createdProduct = await product.save()
+  res.status(201).json(createdProduct)
+})
+
+// @desc    Update a product
+// @route   PATCH /api/products/:id
+// @access  Private/Admin
+const updateProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    price,
+    description,
+    image,
+    brand,
+    category,
+    countInStock,
+    isActive
+  } = req.body
+
   const product = await Product.findById(req.params.id)
 
   if (product) {
-    product.name = name
-    product.price = price
-    product.description = description
-    product.image = image
-    product.brand = brand
-    product.category = category
-    product.countInStock = countInStock
+    product.name = name || product.name
+    product.price = price || product.price
+    product.description = description || product.description
+    product.image = image || product.image
+    product.brand = brand || product.brand
+    product.category = category || product.category
+    product.countInStock = countInStock || product.countInStock
+    product.isActive = isActive || product.isActive
 
     const updatedProduct = await product.save()
     res.json(updatedProduct)
@@ -119,10 +137,11 @@ const createProductReview = asyncHandler(async (req, res) => {
     const alreadyReviewed = product.reviews.find(
       (r) => r.user.toString() === req.user._id.toString()
     )
-
     if (alreadyReviewed) {
-      res.status(400)
-      throw new Error('Product already reviewed')
+      const filteredReviews = product.reviews.filter((value, index) => {
+        return value.user !== alreadyReviewed.user
+      })
+      product.reviews = filteredReviews
     }
 
     const review = {
@@ -133,9 +152,7 @@ const createProductReview = asyncHandler(async (req, res) => {
     }
 
     product.reviews.push(review)
-
     product.numReviews = product.reviews.length
-
     product.rating =
       product.reviews.reduce((acc, item) => item.rating + acc, 0) /
       product.reviews.length
@@ -152,7 +169,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(3)
+  const products = await Product.find({ isActive: true }).sort({ rating: -1 }).limit(3)
 
   res.json(products)
 })

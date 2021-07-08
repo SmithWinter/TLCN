@@ -75,7 +75,7 @@ const OrderScreen = ({ match, history }) => {
         setSdkReady(true)
       }
     }
-  }, [dispatch, orderId, successPay, successDeliver, order])
+  }, [dispatch, orderId, successPay, successDeliver, order, userInfo])
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult)
@@ -113,7 +113,7 @@ const OrderScreen = ({ match, history }) => {
               </p>
               {order.isDelivered ? (
                 <Message variant='success'>
-                  Delivered on {moment(order.deliveredAt).format("DD/MM/YYYY hh:mm:ss")}
+                  Delivered on {moment(order.deliveredAt).format("DD/MM/YYYY HH:mm")}
                 </Message>
               ) : (
                 <Message variant='danger'>Not Delivered</Message>
@@ -127,7 +127,7 @@ const OrderScreen = ({ match, history }) => {
                 {order.paymentMethod}
               </p>
               {order.isPaid ? (
-                <Message variant='success'>Paid on {moment(order.paidAt).format("DD/MM/YYYY hh:mm:ss") }</Message>
+                <Message variant='success'>Paid on {moment(order.paidAt).format("DD/MM/YYYY HH:mm") }</Message>
               ) : (
                 <Message variant='danger'>Not Paid</Message>
               )}

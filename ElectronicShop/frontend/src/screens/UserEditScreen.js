@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { getUserDetails, updateUser } from '../actions/userActions'
+import { getUserInfoById, updateUser } from '../actions/userActions'
 import { USER_UPDATE_RESET } from '../constants/userConstants'
 
 const UserEditScreen = ({ match, history }) => {
@@ -31,9 +34,12 @@ const UserEditScreen = ({ match, history }) => {
     if (successUpdate) {
       dispatch({ type: USER_UPDATE_RESET })
       history.push('/admin/userlist')
+      setTimeout(() => {
+        toast.info('Edit user successful')
+      }, 500);
     } else {
       if (!user.name || user._id !== userId) {
-        dispatch(getUserDetails(userId))
+        dispatch(getUserInfoById(userId))
       } else {
         setName(user.name)
         setEmail(user.email)
@@ -47,11 +53,13 @@ const UserEditScreen = ({ match, history }) => {
     dispatch(updateUser({ _id: userId, name, email, isAdmin }))
   }
 
+  console.log(user._id === userDetails._id ? true : false)
   return (
     <>
       <Link to='/admin/userlist' className='btn btn-light my-3'>
         Go Back
       </Link>
+      <ToastContainer />
       <FormContainer>
         <h1>Edit User</h1>
         {loadingUpdate && <Loader />}
@@ -87,6 +95,7 @@ const UserEditScreen = ({ match, history }) => {
                 type='checkbox'
                 label='Is Admin'
                 checked={isAdmin}
+                disabled={user._id === userId ? true : false}
                 onChange={(e) => setIsAdmin(e.target.checked)}
               ></Form.Check>
             </Form.Group>

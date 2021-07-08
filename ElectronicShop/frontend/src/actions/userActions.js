@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios"
 import {
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
@@ -24,8 +24,8 @@ import {
   USER_UPDATE_FAIL,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_REQUEST,
-} from '../constants/userConstants'
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+} from "../constants/userConstants"
+import { ORDER_LIST_MY_RESET } from "../constants/orderConstants"
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -35,12 +35,12 @@ export const login = (email, password) => async (dispatch) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     }
 
     const { data } = await axios.post(
-      '/api/users/login',
+      "/api/users/login",
       { email, password },
       config
     )
@@ -50,7 +50,7 @@ export const login = (email, password) => async (dispatch) => {
       payload: data,
     })
 
-    localStorage.setItem('userInfo', JSON.stringify(data))
+    localStorage.setItem("userInfo", JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -70,12 +70,12 @@ export const loginSocial = (email, name) => async (dispatch) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     }
 
     const { data } = await axios.post(
-      '/api/users/login/social',
+      "/api/users/login/social",
       { email, name },
       config
     )
@@ -85,7 +85,7 @@ export const loginSocial = (email, name) => async (dispatch) => {
       payload: data,
     })
 
-    localStorage.setItem('userInfo', JSON.stringify(data))
+    localStorage.setItem("userInfo", JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -98,15 +98,15 @@ export const loginSocial = (email, name) => async (dispatch) => {
 }
 
 export const logout = () => (dispatch) => {
-  localStorage.removeItem('userInfo')
-  localStorage.removeItem('cartItems')
-  localStorage.removeItem('shippingAddress')
-  localStorage.removeItem('paymentMethod')
+  localStorage.removeItem("userInfo")
+  localStorage.removeItem("cartItems")
+  localStorage.removeItem("shippingAddress")
+  localStorage.removeItem("paymentMethod")
   dispatch({ type: USER_LOGOUT })
   dispatch({ type: USER_DETAILS_RESET })
   dispatch({ type: ORDER_LIST_MY_RESET })
   dispatch({ type: USER_LIST_RESET })
-  document.location.href = '/login'
+  document.location.href = "/login"
 }
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -117,12 +117,12 @@ export const register = (name, email, password) => async (dispatch) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     }
 
     const { data } = await axios.post(
-      '/api/users',
+      "/api/users",
       { name, email, password },
       config
     )
@@ -137,7 +137,7 @@ export const register = (name, email, password) => async (dispatch) => {
       payload: data,
     })
 
-    localStorage.setItem('userInfo', JSON.stringify(data))
+    localStorage.setItem("userInfo", JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
@@ -149,7 +149,7 @@ export const register = (name, email, password) => async (dispatch) => {
   }
 }
 
-export const getUserDetails = (id) => async (dispatch, getState) => {
+export const getUserDetails = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_DETAILS_REQUEST,
@@ -165,7 +165,8 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.get(`/api/users/${id}`, config)
+    console.log(userInfo.token)
+    const { data } = await axios.get(`/api/users/profile`, config)
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -176,7 +177,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
+    if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
     dispatch({
@@ -198,12 +199,12 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
 
-    const { data } = await axios.put(`/api/users/profile`, user, config)
+    const { data } = await axios.patch(`/api/users/profile`, user, config)
 
     dispatch({
       type: USER_UPDATE_PROFILE_SUCCESS,
@@ -213,13 +214,13 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
       type: USER_LOGIN_SUCCESS,
       payload: data,
     })
-    localStorage.setItem('userInfo', JSON.stringify(data))
+    localStorage.setItem("userInfo", JSON.stringify(data))
   } catch (error) {
     const message =
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
+    if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
     dispatch({
@@ -256,11 +257,48 @@ export const listUsers = () => async (dispatch, getState) => {
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
+    if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
     dispatch({
       type: USER_LIST_FAIL,
+      payload: message,
+    })
+  }
+}
+
+export const getUserInfoById = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.get(`/api/users/${id}`, config)
+
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({
+      type: USER_DETAILS_FAIL,
       payload: message,
     })
   }
@@ -278,19 +316,27 @@ export const deleteUser = (id) => async (dispatch, getState) => {
 
     const config = {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
 
-    await axios.delete(`/api/users/${id}`, config)
+    const deactivateUser = {
+      isActive: false,
+    }
+    const { data } = await axios.patch(
+      `/api/users/${id}`,
+      deactivateUser,
+      config
+    )
 
-    dispatch({ type: USER_DELETE_SUCCESS })
+    dispatch({ type: USER_DELETE_SUCCESS, payload: data })
   } catch (error) {
     const message =
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
+    if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
     dispatch({
@@ -312,12 +358,12 @@ export const updateUser = (user) => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
 
-    const { data } = await axios.put(`/api/users/${user._id}`, user, config)
+    const { data } = await axios.patch(`/api/users/${user._id}`, user, config)
 
     dispatch({ type: USER_UPDATE_SUCCESS })
 
@@ -329,7 +375,7 @@ export const updateUser = (user) => async (dispatch, getState) => {
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message
-    if (message === 'Not authorized, token failed') {
+    if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
     dispatch({

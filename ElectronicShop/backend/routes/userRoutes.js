@@ -19,11 +19,11 @@ router.post('/login/social', authUserSocial)
 router
   .route('/profile')
   .get(protect, getUserProfile)
-  .put(protect, updateUserProfile)
+  .patch(protect, updateUserProfile)
 router
   .route('/:id')
   .delete(protect, admin, deleteUser)
   .get(protect, admin, getUserById)
-  .put(protect, admin, updateUser)
+  .patch(protect, admin, updateUser)
 
 export default router

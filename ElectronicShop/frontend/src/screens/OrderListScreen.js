@@ -49,18 +49,18 @@ const OrderListScreen = ({ history }) => {
               <tr key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.user && order.user.name}</td>
-                <td>{moment(order.createdAt).format("DD/MM/YYYY hh:mm:ss")}</td>
+                <td>{moment(order.createdAt).format("DD/MM/YYYY HH:mm")}</td>
                 <td>${order.totalPrice}</td>
                 <td>
                   {order.isPaid ? (
-                    moment(order.paidAt).format("DD/MM/YYYY hh:mm:ss") 
+                    moment(order.paidAt).format("DD/MM/YYYY HH:mm") 
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
                   )}
                 </td>
                 <td>
                   {order.isDelivered ? (
-                    moment(order.deliveredAt).format("DD/MM/YYYY hh:mm:ss") 
+                    moment(order.deliveredAt).format("DD/MM/YYYY HH:mm") 
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
                   )}

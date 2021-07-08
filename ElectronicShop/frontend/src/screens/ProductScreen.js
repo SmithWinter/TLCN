@@ -14,7 +14,7 @@ import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1)
-  const [rating, setRating] = useState(0)
+  const [rating, setRating] = useState('')
   const [comment, setComment] = useState('')
 
   const dispatch = useDispatch()
@@ -34,14 +34,37 @@ const ProductScreen = ({ history, match }) => {
 
   useEffect(() => {
     if (successProductReview) {
-      setRating(0)
+      setRating('')
       setComment('')
+      dispatch(listProductDetails(match.params.id))
     }
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
   }, [dispatch, match, successProductReview])
+
+  useEffect(() => {
+    if (userInfo) {
+      getUserReview()
+    }
+  }, [product])
+
+  const getUserReview = () => {
+    if (product.reviews.length > 0) {
+      const getUserReview = product.reviews.find((value, index) => {
+        return value.user === userInfo._id
+      })
+      if (getUserReview) {
+        const { rating, comment } = getUserReview
+        setRating(getUserReview.rating)
+        setComment(getUserReview.comment)
+      }
+    } else {
+      setRating('')
+      setComment('')
+    }
+  }
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`)
@@ -181,12 +204,12 @@ const ProductScreen = ({ history, match }) => {
                           value={rating}
                           onChange={(e) => setRating(e.target.value)}
                         >
-                          <option value=''>Select...</option>
-                          <option value='1'>1 - Poor</option>
-                          <option value='2'>2 - Fair</option>
-                          <option value='3'>3 - Good</option>
-                          <option value='4'>4 - Very Good</option>
-                          <option value='5'>5 - Excellent</option>
+                          <option value={''}>Select...</option>
+                          <option value={1}>1 - Poor</option>
+                          <option value={2}>2 - Fair</option>
+                          <option value={3}>3 - Good</option>
+                          <option value={4}>4 - Very Good</option>
+                          <option value={5}>5 - Excellent</option>
                         </Form.Control>
                       </Form.Group>
                       <Form.Group controlId='comment'>
@@ -199,7 +222,7 @@ const ProductScreen = ({ history, match }) => {
                         ></Form.Control>
                       </Form.Group>
                       <Button
-                        disabled={loadingProductReview}
+                        disabled={loadingProductReview || rating === ''}
                         type='submit'
                         variant='primary'
                       >

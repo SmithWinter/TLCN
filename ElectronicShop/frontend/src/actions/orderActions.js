@@ -122,7 +122,7 @@ export const payOrder = (orderId, paymentResult) => async (
       },
     }
 
-    const { data } = await axios.put(
+    const { data } = await axios.patch(
       `/api/orders/${orderId}/pay`,
       paymentResult,
       config
@@ -163,7 +163,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
       },
     }
 
-    const { data } = await axios.put(
+    const { data } = await axios.patch(
       `/api/orders/${order._id}/deliver`,
       {},
       config

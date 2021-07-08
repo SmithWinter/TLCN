@@ -9,12 +9,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { listProductDetails, updateProduct } from '../actions/productActions'
-import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
+import { createProduct } from '../actions/productActions'
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
-const ProductEditScreen = ({ match, history }) => {
-  const productId = match.params.id
-
+const ProductCreateScreen = ({ match, history }) => {
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
   const [image, setImage] = useState('')
@@ -26,37 +24,21 @@ const ProductEditScreen = ({ match, history }) => {
 
   const dispatch = useDispatch()
 
-  const productDetails = useSelector((state) => state.productDetails)
-  const { loading, error, product } = productDetails
-
-  const productUpdate = useSelector((state) => state.productUpdate)
+  const productCreate = useSelector((state) => state.productCreate)
   const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = productUpdate
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+  } = productCreate
 
   useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: PRODUCT_UPDATE_RESET })
+    if (successCreate) {
+      dispatch({ type: PRODUCT_CREATE_RESET })
       history.push('/admin/productlist')
-      setTimeout(() => {
-        toast.info('Edit product successful')
-      }, 500)
-    } else {
-      if (!product.name || product._id !== productId) {
-        dispatch(listProductDetails(productId))
-      } else {
-        setName(product.name)
-        setPrice(product.price)
-        setImage(product.image)
-        setBrand(product.brand)
-        setCategory(product.category)
-        setCountInStock(product.countInStock)
-        setDescription(product.description)
-      }
+      toast.info('Create product successful')
     }
-  }, [dispatch, history, productId, product, successUpdate])
+  }, [dispatch, history, successCreate])
+
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0]
@@ -84,8 +66,7 @@ const ProductEditScreen = ({ match, history }) => {
   const submitHandler = (e) => {
     e.preventDefault()
     dispatch(
-      updateProduct({
-        _id: productId,
+      createProduct({
         name,
         price,
         image,
@@ -102,22 +83,16 @@ const ProductEditScreen = ({ match, history }) => {
       <Link to='/admin/productlist' className='btn btn-light my-3'>
         Go Back
       </Link>
-      <ToastContainer />
       <FormContainer>
-        <h1>Edit Product</h1>
-        {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
+        <h1>Create Product</h1>
+        {loadingCreate && <Loader />}
+        {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
+        <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
               <Form.Label>Name</Form.Label>
               <Form.Control
-                type='name'
                 required
+                type='name'
                 placeholder='Enter name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -127,8 +102,8 @@ const ProductEditScreen = ({ match, history }) => {
             <Form.Group controlId='price'>
               <Form.Label>Price</Form.Label>
               <Form.Control
-                type='number'
                 required
+                type='number'
                 placeholder='Enter price'
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -139,12 +114,14 @@ const ProductEditScreen = ({ match, history }) => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type='text'
+                required
                 placeholder='Enter image url'
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
               <Form.File
                 id='image-file'
+                required
                 label='Choose File'
                 custom
                 onChange={uploadFileHandler}
@@ -197,13 +174,12 @@ const ProductEditScreen = ({ match, history }) => {
             </Form.Group>
 
             <Button type='submit' variant='primary'>
-              Update
+              Create
             </Button>
           </Form>
-        )}
       </FormContainer>
     </>
   )
 }
 
-export default ProductEditScreen
+export default ProductCreateScreen

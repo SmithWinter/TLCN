@@ -36,7 +36,7 @@ const ProfileScreen = ({ location, history }) => {
     } else {
       if (!user || !user.name || success) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET })
-        dispatch(getUserDetails('profile'))
+        dispatch(getUserDetails(userInfo))
         dispatch(listMyOrders())
       } else {
         setName(user.name)
@@ -59,7 +59,6 @@ const ProfileScreen = ({ location, history }) => {
       <Col md={3}>
         <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
-        {}
         {success && <Message variant='success'>Profile Updated</Message>}
         {loading ? (
           <Loader />
@@ -71,6 +70,7 @@ const ProfileScreen = ({ location, history }) => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type='name'
+                required
                 placeholder='Enter name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -81,6 +81,7 @@ const ProfileScreen = ({ location, history }) => {
               <Form.Label>Email Address</Form.Label>
               <Form.Control
                 type='email'
+                required
                 placeholder='Enter email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -91,6 +92,7 @@ const ProfileScreen = ({ location, history }) => {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type='password'
+                required
                 placeholder='Enter password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -101,6 +103,7 @@ const ProfileScreen = ({ location, history }) => {
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
                 type='password'
+                required
                 placeholder='Confirm password'
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -135,18 +138,18 @@ const ProfileScreen = ({ location, history }) => {
               {orders.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
-                  <td>{moment(order.createdAt).format("DD/MM/YYYY hh:mm:ss") }</td>
+                  <td>{moment(order.createdAt).format("DD/MM/YYYY HH:mm") }</td>
                   <td>{order.totalPrice}</td>
                   <td>
                     {order.isPaid ? (
-                      moment(order.paidAt).format("DD/MM/YYYY hh:mm:ss") 
+                      moment(order.paidAt).format("DD/MM/YYYY HH:mm") 
                     ) : (
                       <i className='fas fa-times' style={{ color: 'red' }}></i>
                     )}
                   </td>
                   <td>
                     {order.isDelivered ? (
-                      moment(order.deliveredAt).format("DD/MM/YYYY hh:mm:ss") 
+                      moment(order.deliveredAt).format("DD/MM/YYYY HH:mm") 
                     ) : (
                       <i className='fas fa-times' style={{ color: 'red' }}></i>
                     )}
