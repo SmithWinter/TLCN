@@ -1,1 +1,2 @@
-web: npm install && npm run dev
+web: npm install 
+heroku-postbuild: npm run dev
