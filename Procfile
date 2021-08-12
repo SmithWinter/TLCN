@@ -1,0 +1,1 @@
+web: cd ElectronicApp && npm install && npm run dev
