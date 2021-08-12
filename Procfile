@@ -1,1 +1,1 @@
-web: cd ElectronicApp && npm install && npm run dev
+web: npm install && npm run dev
