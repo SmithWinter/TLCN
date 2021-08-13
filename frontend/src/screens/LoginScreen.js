@@ -12,7 +12,7 @@ import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 import { login, loginSocial } from '../actions/userActions'
 
-const GOOGLE_CLIENT_ID = "436094608871-i3j5aqfqd243sk2qfb2nubeq3bnahu84.apps.googleusercontent.com"
+const GOOGLE_CLIENT_ID = "1029436035804-071rne3qpchmerq08ed8bnaqsdia3ldc.apps.googleusercontent.com"
 const FACEBOOK_CLIENT_ID = "2821696881376401"
 
 const LoginScreen = ({ location, history }) => {
