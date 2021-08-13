@@ -5,18 +5,21 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon backend/server",
     "server": "nodemon backend/server",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder",
-    "data:destroy": "node backend/seeder -d"
+    "data:destroy": "node backend/seeder -d",
+    "build-client": "npm install --prefix frontend",
+    "dev": "concurrently --kill-others \"npm run server\" \"npm run client\"",
+    "build-app": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run build-app"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "colorette": "^1.2.1",
     "colors": "^1.4.0",
-    "dotenv": "^8.2.0",
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.6.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "jsonwebtoken": "^8.5.1",
@@ -24,6 +27,7 @@
     "mongoose": "^5.10.6",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
+    "nodemon": "^2.0.4",
     "path": "^0.12.7",
     "react-facebook-login": "^4.1.1",
     "react-icons": "^4.1.0"
