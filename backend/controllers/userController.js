@@ -207,12 +207,14 @@ const getUserById = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id)
 
+  let userIsActive = req.body.isActive ? true : false
+  let userIsAdmin = req.body.isAdmin ? true : false
 
   if (user) {
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email
-    user.isAdmin = req.body.isAdmin
-    user.isActive = req.body.isActive || user.isActive
+    user.isAdmin = userIsAdmin
+    user.isActive = userIsActive
 
     const updatedUser = await user.save()
     res.json(updatedUser)

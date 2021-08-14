@@ -86,6 +86,7 @@ const ProductEditScreen = ({ match, history }) => {
     dispatch(
       updateProduct({
         _id: productId,
+        isActive: true,
         name,
         price,
         image,

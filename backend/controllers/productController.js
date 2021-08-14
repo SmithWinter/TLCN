@@ -106,6 +106,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   } = req.body
 
   const product = await Product.findById(req.params.id)
+  let productIsActive = isActive ? true : false
 
   if (product) {
     product.name = name || product.name
@@ -115,7 +116,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.brand = brand || product.brand
     product.category = category || product.category
     product.countInStock = countInStock || product.countInStock
-    product.isActive = isActive || product.isActive
+    product.isActive = productIsActive
 
     const updatedProduct = await product.save()
     res.json(updatedProduct)
