@@ -1,18 +1,20 @@
 # Electronic Shop
 
 ### Member
+
+```text
 17110022 - Ho Vu Minh Duc
-
 17110046 - Phan Hoang Long
-
 17110051 - Nguyen Quang Minh
+```
 
 ### Notes
+
 Nodejs 15.3.0 is recommended to run the project successfully, older version might not work
 
 ### Install Dependencies (frontend & backend)
 
-```
+```code
 npm install
 cd frontend
 npm install
@@ -20,7 +22,7 @@ npm install
 
 ### Run
 
-```
+```code
 # Run frontend (:3000) & backend (:5000)
 npm run dev
 
@@ -33,7 +35,7 @@ npm run client
 
 ### Seed Database
 
-```
+```code
 # Import data
 npm run data:import
 
@@ -41,7 +43,7 @@ npm run data:import
 npm run data:destroy
 ```
 
-```
+```text
 Sample User Logins
 
 admin@example.com (Admin)
